@@ -12,13 +12,84 @@ Operator overloading is a well explored concept in programming that enables a pr
 
 **Mathematical Operators**
 
-| Symbol | Op Code | Description |
-| **+** | ZEND_ADD | Used for addition with int and float, union with arrays |
-| **-** | ZEND_SUB | Used for subtraction with int and float |
-| **\*** | ZEND_MUL | Used for multiplication with int and float |
-| **/** | ZEND_DIV | Used for division with int and float |
-| **%** | ZEND_MOD | Used for modulo with int |
-| **\*\*** | ZEND_POW | Used for pow with int |
+| Symbol | Description |
+| ------ | ----------- |
+| **+** | Used for addition with int and float, union with arrays |
+| **-** | Used for subtraction with int and float |
+| **\*** | Used for multiplication with int and float |
+| **/** | Used for division with int and float |
+| **%** | Used for modulo with int |
+| **\*\*** | Used for pow with int |
+
+**String Operators** 
+
+| Symbol | Description |
+| ------ | ----------- |
+| **.** | Used for string concatenation |
+
+**Comparison Operators**
+
+| Symbol | Description |
+| ------ | ----------- |
+| **==** | Equals comparison with type casting |
+| **===** | Identity comparison |
+| **>** | Greater than comparison |
+| **<** | Less than comparison |
+| **>=** | Greater than or equal to comparison |
+| **<=** | Less than or equal to comarpison |
+| **!=** | Not equals comparison with type casting |
+| **<>** | Not equals comparison with type casting |
+| **!==** | Not identical comparison |
+| **<=>** | Sort hierarchy comparison |
+
+**Bitwise Operators**
+
+| Symbol | Description |
+| ------ | ----------- |
+| **&** | Bitwise and |
+| **\|** | Bitwise or |
+| **^** | Bitwise xor |
+| **~** | Bitwise not |
+| **<<** | Bitwise shift left |
+| **>>** | Bitwise shift right |
+
+**Logical Operators**
+
+| Symbol | Description |
+| ------ | ----------- |
+| **and** | Logical and operator |
+| **or** | Logical or operator |
+| **xor** | Logical xor operator |
+| **&&** | Logical and operator |
+| **\|\|** | Logical or operator |
+| **!** | Logical negation operator |
+
+**Misc. Operators**
+
+| Symbol | Description |
+| ------ | ----------- |
+| **??** | Null coalesce |
+| **? :** | Ternary operator |
+| **@** | Error suppression operator |
+| **\`\`** | Shell execution escape operator |
+
+**Assignment Operators**
+
+| Symbol | Example | Equivalent | Description |
+| ------ | ------- | ---------- | ----------- |
+| **+=** | $a += $b | $a = $a + $b | Add assignment operator |
+| **-=** | $a -= $b | $a = $a - $b | Subtract assignment operator |
+| **\*=** | $a \*= $b | $a = $a * $b | Multiply assignment operator |
+| **/=** | $a /= $b | $a = $a / $b | Divide assignment operator |
+| **%=** | $a %= $b | $a = $a % $b | Modulo assignment operator |
+| **\*\*\=** | $a \*\*= $b | $a = $a \*\* $b | Pow assignment operator |
+| **&=** | $a &= $b | $a = $a & $b | Bitwise and assignment operator |
+| **\|=** | $a \|= $b | $a = $a \| $b | Bitwise or assignment operator |
+| **^=** | $a ^= $b | $a = $a ^ $b | Bitwise xor assignment operator |
+| **<<=** | $a <<= $b | $a = $a << $b | Bitwise shift left assignment operator |
+| **>>=** | $a >>= $b | $a = $a >> $b | Bitwise shift right assignment operator |
+| **.=** | $a .= $b | $a = $a . $b | Concatenation assignment operator |
+| **??=** | $a ??= $b | $a = $a ?? $b | Null coalesce assignment operator |
 
 ## Proposal
 
