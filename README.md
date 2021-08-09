@@ -1,8 +1,10 @@
-# PHP RFC: Operator Overloading
+# PHP RFC: Limited User Defined Operator Overloading
 
 ## Introduction
 
 This RFC aims to provide basic operator overloading within PHP for objects.
+
+This RFC is an intentially limited set of operators, a minimal set to be PHP's first usage of user defined operator overloads. The idea behind this is that the proposed operators have the most clear and impactful use cases that use a self-contained set of the operators. This allows us to take on operator overloading in chunks instead of all at once, and as we see it perform well we can consider overloading for further operators.
 
 ## Background
 
@@ -329,6 +331,28 @@ In this RFC only a subset of the operators in PHP are supported for operator ove
 ## RFC Impact
 
 ## Future Scope
+
+Many things that could be part of this RFC are left to future scope.
+
+### Further Operator Support
+
+The bitwise operators, string concatenation operator, logical operators, and a few of the miscellaneous operators also could potentially benefit from operator overloads. In particular, bitwise operators could be combined with enums in interesting ways to provide enum pseudo-sets.
+
+### Reassignment Operators
+
+The reassignment operators are optimized as part of the compile step to instances of the base operators. If control of reassignment operators independently of the associated plain operators were to be supported, changes to how this optimization is done would be needed.
+
+### Scalar Objects
+
+This RFC could impact and make the often explored scalar objects concept more fully featured. It could, alternatively, make ensuring their behavior more difficult. Either way it is likely that this RFC would affect the scope of any scalar objects RFC.
+
+### Exposing Core Overloads
+
+As mentioned in this RFC, there are some objects within core that implement their own limited operator overloads. Deciding whether or not to update these objects and open their overloads for extension is left as future scope.
+
+### New Infixes
+
+This RFC takes no position on R-style operator overloading, which allows users to define custom operators outside of the symbol set supported by core. This type of overloading is not supported by this RFC, and such a feature would be part of a separate RFC.
 
 ## Proposed Voting Choices
 
