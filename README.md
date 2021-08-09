@@ -305,10 +305,10 @@ In this RFC only a subset of the operators in PHP are supported for operator ove
 | -------- | ----------- |
 | `+` | `__add()` |
 | `-` | `__sub()` |
-| `\*` | `__mul()` |
+| `*` | `__mul()` |
 | `/` | `__div()` |
 | `%` | `__mod()` |
-| `\*\*` | `__pow()` |
+| `**` | `__pow()` |
 
 **Comparison Operators**
 
