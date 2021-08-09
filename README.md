@@ -6,7 +6,7 @@ This RFC aims to provide basic operator overloading within PHP for objects.
 
 ## Background
 
-Operator overloading is a well explored concept in programming that enables a programmer to control the behavior of their code when combined with an infix, or operator. Some languages such as R allow for defining custom operators in addition to overloading existing operators. Some languages such as Python allow for overloading all existing operators, but not for defining new operators. Some languages such as Java do not allow for custom operator overloading at all.
+Operator overloading is a well explored concept in programming that enables a programmer to control the behavior of their code when combined with an infix, or operator. Some languages such as R allow for defining custom operators in addition to overloading existing operators. Some languages such as Python allow for overloading nearly all existing operators, but not for defining new operators. Some languages such as Java and PHP do not allow for custom operator overloading at all, though have operator overloading like behavior built into the language.
 
 ### Existing Operators in PHP
 
@@ -90,6 +90,81 @@ Operator overloading is a well explored concept in programming that enables a pr
 | **>>=** | $a >>= $b | $a = $a >> $b | Bitwise shift right assignment operator |
 | **.=** | $a .= $b | $a = $a . $b | Concatenation assignment operator |
 | **??=** | $a ??= $b | $a = $a ?? $b | Null coalesce assignment operator |
+
+### Custom Operator Behavior
+
+There is behavior within PHP currently that could be considered operator overloading, but it is not user defined. Instead, this behavior exists to add functionality to internal implementations and structures.
+
+#### Core
+
+**Array Unions**
+
+Two arrays can be unioned with the `+` operator.
+
+**DateTime**
+
+The `DateTime` class can be used with comparison operators to determine which `DateTime` corresponds to an earlier or later value.
+
+**Spaceship Operator**
+
+The spaceship operator (`<=>`) has many features that would be equivalent to an operator overload from a users perspective.
+
+```php
+<?php
+
+// Strings
+echo "a" <=> "a"; // 0
+echo "a" <=> "b"; // -1
+echo "b" <=> "a"; // 1
+
+// Arrays
+echo [] <=> []; // 0
+echo [1, 2, 3] <=> [1, 2, 3]; // 0
+echo [1, 2, 3] <=> []; // 1
+echo [1, 2, 3] <=> [1, 2, 1]; // 1
+echo [1, 2, 3] <=> [1, 2, 4]; // -1
+```
+
+#### Extensions
+
+The following is a non-exhaustive list of extensions which provide objects with their own operator overloads.
+
+- ext-decimal
+- ext-gmp
+
+## Use Cases
+
+The following is a non-exhaustive list of use cases that this RFC in particular could serve. Further use cases exist with implementations for more operators.
+
+### Objects Representing Arbitrary Precision Numbers
+
+Objects which represent arbitrary precision numbers cannot convert to a float or an int in order to utilize existing operator behavior, as their values may overflow.
+
+### Currency Values
+
+Currency values have a numeric value along with a currency type. For instance, `$total = $usd + $yen` would need to consider not only the numeric values but the currency conversion between the two, and what currency the return value should be in. In same cases, an application may want to automatically handle these decisions, however in other situations it may way to throw an exception unless the currency types match.
+
+Further, the expression `$total = $usd * $yen` is non-sensical, while the expression `$total = $usd * 5` has meaning, showing that intelligent type controls may be a necessary feature for some user applications.
+
+### Complex Numbers
+
+Objects which represent complex numbers cannot be meaningfully converted to any scalar and then used with existing operator behavior. Further, the behavior of certain operators implies complex calculations. For instance, `(1 + 2i) * (3 + 4i)` must be solved by using the FOIL method: First, Outside, Inside, Last. The correct value for the expression is `-5 + 10i`, but it can also be expressed by the tuple `(5*sqrt(5), PI - atan(2))` if given as polar values instead.
+
+### Matrices and Vectors
+
+Matrices have different behavior when combined using an operator with a simple numeric value versus another matrix. 
+
+### Unit Based Values
+
+Values which have an associated unit have additional logic when used with operators. The currency example above is a specific case of this general class. There are three main considerations that need to be made when a value has a unit of some kind:
+
+1. Are the units of the two values compatible with the desired operation.
+2. Do any unit conversions need to be done before the operation can be performed.
+3. Is there a specific unit that it makes the most sense to give the return value in.
+
+For instance, the expression `19cm + 2m` could be expressed as `219cm` or `2.19m` or `2190mm`. Meanwhile, the expression `3m * 4m` would be expressed as `12m^2`. The expression `1.2km + 4mi` would require a unit conversion before the operation could be performed. And the expression `2m + 4L` doesn't have a meaningful answer.
+
+Unit based values in particular benefit from allowing user-defined typing in the arguments.
 
 ## Commutativity
 
