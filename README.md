@@ -152,7 +152,7 @@ Objects which represent complex numbers cannot be meaningfully converted to any 
 
 ### Matrices and Vectors
 
-Matrices have different behavior when combined using an operator with a simple numeric value versus another matrix. 
+Matrices have different behavior when combined using an operator with a simple numeric value versus another matrix. Matrices also exhibit non-commutative behavior with multiplication. Commutativity is covered in the next section in greater detail.
 
 ### Unit Based Values
 
