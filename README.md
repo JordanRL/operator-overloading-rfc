@@ -299,6 +299,8 @@ Class A {
 
 In this RFC only a subset of the operators in PHP are supported for operator overloading. The proposed operators are:
 
+**Math Operators**
+
 | Operator | Method Name |
 | -------- | ----------- |
 | `+` | `__add()` |
@@ -307,6 +309,18 @@ In this RFC only a subset of the operators in PHP are supported for operator ove
 | `/` | `__div()` |
 | `%` | `__mod()` |
 | `\*\*` | `__pow()` |
+
+**Comparison Operators**
+
+| Operator | Method Name |
+| -------- | ----------- |
+| `>` | `__greaterThan()` |
+| `<` | `__lessThan()` |
+| `>=` | `__greaterThanOrEq()` |
+| `<=` | `__lessThanOrEq()` |
+| `==` | `__equals()` |
+| `!=` | `__notEquals()` |
+| `<=>` | `__compareTo()` |
 
 ## Backward Incompatible Changes
 
