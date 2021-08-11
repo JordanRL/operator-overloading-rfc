@@ -135,19 +135,7 @@ class ComplexNumber
             goto end;
         }
 
-        if (is_int($other)) {
-            $realPart      = $this->realPart * $other;
-            $imaginaryPart = $this->imaginaryPart * $other;
-            goto end;
-        }
-
-        if (is_float($other)) {
-            $realPart      = $this->realPart * $other;
-            $imaginaryPart = $this->imaginaryPart * $other;
-            goto end;
-        }
-
-        if ($other instanceof Real) {
+        if ($this->isRealNumber($other)) {
             $realPart      = $this->realPart * $other;
             $imaginaryPart = $this->imaginaryPart * $other;
             goto end;
