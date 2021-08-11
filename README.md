@@ -297,7 +297,7 @@ It is easy to see from this set of implementations that not only is commutativit
 
 Java does not support user-defined operator overloads at all, but has built-in behavior that is similar to operator overloads for certain situations. PHP has similar behavior, with not current support for user-defined operator overloads, but with some built-in behavior that acts in ways similar to an operator overload. The PHP cases were covered in the **Current Operator Behavior** section of the **Background**.
 
-In Java, the `+` operator can be used to join strings in a way similar to the PHP operator `.` and is considered a "built-in operator overload" by Java developers.
+In Java, the `+` operator can be used to join strings in a way similar to the PHP operator `.` and is sometimes described as a "built-in operator overload" by Java developers.
 
 ## Proposal
 
