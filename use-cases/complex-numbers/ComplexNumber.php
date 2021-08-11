@@ -5,12 +5,12 @@ namespace Examples\ComplexNumbers;
 class ComplexNumber
 {
 
-    private Real $realPart;
+    private Real      $realPart;
     private Imaginary $imaginaryPart;
 
     public function __construct(Real $realPart, Imaginary $imaginaryPart)
     {
-        $this->realPart = $realPart;
+        $this->realPart      = $realPart;
         $this->imaginaryPart = $imaginaryPart;
     }
 
@@ -26,47 +26,129 @@ class ComplexNumber
 
     public function __add(ComplexNumber $self, Imaginary|Real|ComplexNumber|int|float $other, bool $left): Imaginary|Real|ComplexNumber
     {
-        $realPart = $this->realPart;
-        $imaginaryPart = $this->imaginaryPart;
+        begin:
+        {
+            [$realPart, $imaginaryPart] = $this->addParts($other);
 
-        if ($other instanceof ComplexNumber) {
-            $realPart += $other->getRealPart();
-            $imaginaryPart += $other->getImaginaryPart();
-        } else {
-            if (is_int($other) || is_float($other) || $other instanceof Real) {
-                $realPart += $other;
-            } else {
-                $imaginaryPart += $other;
+            if (0 === $realPart->abs()) {
+                $result = new Imaginary($imaginaryPart);
+                goto end;
             }
-        }
 
-        if ($realPart->abs() != 0 && $imaginaryPart->abs() != 0) {
-            return new ComplexNumber($realPart, $imaginaryPart);
-        }
+            if (0 === $imaginaryPart->abs()) {
+                $result = new Real($realPart);
+                goto end;
+            }
 
-        return ($realPart == 0) ? new Imaginary($imaginaryPart) : new Real($realPart);
+            $result = new ComplexNumber($realPart, $imaginaryPart);
+        }
+        end:
+        return $result;
     }
 
     public function __mul(ComplexNumber $self, SimpleNumber|ComplexNumber|int|float $other, bool $left): Imaginary|Real|ComplexNumber
     {
-        if ($other instanceof ComplexNumber) {
-            $realPart = ($this->imaginaryPart * $other->getImaginaryPart()) + ($this->realPart * $other->getRealPart());
-            $imaginaryPart = ($this->realPart * $other->getImaginaryPart()) + ($this->imaginaryPart * $other->getRealPart());
-        } else {
-            if (is_int($other) || is_float($other) || $other instanceof Real) {
-                $realPart = $this->realPart * $other;
-                $imaginaryPart = $this->imaginaryPart * $other;
-            } else {
-                $realPart = $this->imaginaryPart * $other;
-                $imaginaryPart = $this->realPart * $other;
+        begin:
+        {
+
+            [$realPart,$imaginaryPart] = $this->multiplyParts($other);
+
+
+            if (0 === $realPart->abs() ) {
+                $result = new Imaginary($imaginaryPart);
+                goto end;
             }
-        }
+            if (0 === $imaginaryPart->abs() ) {
+                $result = new Real($realPart);
+                goto end;
+            }
+            $result = new ComplexNumber($realPart, $imaginaryPart);
 
-        if ($realPart->abs() != 0 && $imaginaryPart->abs() != 0) {
-            return new ComplexNumber($realPart, $imaginaryPart);
         }
+        end:
+        return $result;
 
-        return ($realPart == 0) ? new Imaginary($imaginaryPart) : new Real($realPart);
+    }
+
+    private function addParts(Imaginary|Real|ComplexNumber|int|float $other): array
+    {
+        begin:
+        {
+            $realPart      = $this->realPart;
+            $imaginaryPart = $this->imaginaryPart;
+
+            if ($other instanceof ComplexNumber) {
+                $realPart      += $other->getRealPart();
+                $imaginaryPart += $other->getImaginaryPart();
+                goto end;
+            }
+
+            if (is_int($other)) {
+                $realPart += $other;
+                goto end;
+            }
+
+            if (is_float($other)) {
+                $realPart += $other;
+                goto end;
+            }
+
+            if ($other instanceof Real) {
+                $realPart += $other;
+                goto end;
+            }
+
+            $imaginaryPart += $other;
+        }
+        end:
+        return [$realPart, $imaginaryPart];
+    }
+
+    private function multiplyRealPart(SimpleNumber|ComplexNumber|int|float $other): Real
+    {
+        return $this->realPart * $other->getRealPart()
+        + $this->imaginaryPart * $other->getImaginaryPart();
+    }
+
+    private function multiplyImaginaryPart(SimpleNumber|ComplexNumber|int|float $other): Imaginary
+    {
+        return $this->realPart * $other->getImaginaryPart()
+        + $this->imaginaryPart * $other->getRealPart();
+    }
+
+    private function multiplyParts(Imaginary|Real|ComplexNumber|int|float $other): array
+    {
+        begin:
+        {
+            if ($other instanceof ComplexNumber) {
+                $realPart      = $this->multiplyRealPart($other);
+                $imaginaryPart = $this->multiplyImaginaryPart($other);
+                goto end;
+            }
+
+            if (is_int($other)) {
+                $realPart      = $this->realPart * $other;
+                $imaginaryPart = $this->imaginaryPart * $other;
+                goto end;
+            }
+
+            if (is_float($other)) {
+                $realPart      = $this->realPart * $other;
+                $imaginaryPart = $this->imaginaryPart * $other;
+                goto end;
+            }
+
+            if ($other instanceof Real) {
+                $realPart      = $this->realPart * $other;
+                $imaginaryPart = $this->imaginaryPart * $other;
+                goto end;
+            }
+
+            $realPart      = $this->imaginaryPart * $other;
+            $imaginaryPart = $this->realPart * $other;
+        }
+        end:
+        return [$realPart, $imaginaryPart];
     }
 
 }
