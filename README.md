@@ -394,7 +394,7 @@ In this RFC only a subset of the operators in PHP are supported for operator ove
 
 ## Backward Incompatible Changes
 
-Objects used with one of the operators that support operator overloads will now throw an `InvalidOperator` exception if the operator method is not implemented on the object or objects in question. Since expressions involving objects and these operators prior have been mostly nonsensical before, the anticipated impact of this is minimal.
+Objects used with operators will now error if the operator method is not implemented on the object or objects in question. Since expressions involving objects and these operators prior have been mostly nonsensical before, the anticipated impact of this is minimal.
 
 ## Proposed PHP Version
 
@@ -412,7 +412,7 @@ Existing extensions can continue to define their own operator overloads by provi
 
 ### To Opcache
 
-None
+Added `ZEND_IS_LARGER` and `ZEND_IS_LARGER_OR_EQUAL` which are only used if at least one operand is an object. Otherwise previous behavior of reversing to `ZEND_IS_SMALLER` and `ZEND_IS_SMALLER_OR_EQUAL` is used.
 
 ### New Constants
 
