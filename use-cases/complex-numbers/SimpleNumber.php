@@ -137,7 +137,7 @@ abstract class SimpleNumber
         return $all_imaginary;
     }
 
-    private function multiplyNumeric(Number $other): Real|Imaginary
+    private function multiplyNumeric(Number $other): Number
     {
         $product = $this->getValue() * $other;
         return $this instanceof Real

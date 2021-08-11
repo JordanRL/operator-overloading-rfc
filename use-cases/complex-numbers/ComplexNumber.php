@@ -24,7 +24,7 @@ class ComplexNumber
         return $this->imaginaryPart;
     }
 
-    public function __add(Number $other): Imaginary|Real|ComplexNumber
+    public function __add(Number $other): Number
     {
 
         [$realPart, $imaginaryPart] = $this->addParts($other);
@@ -46,7 +46,7 @@ class ComplexNumber
         return $result;
     }
 
-    public function __mul(Number $other): Imaginary|Real|ComplexNumber
+    public function __mul(Number $other): Number
     {
         [$realPart,$imaginaryPart] = $this->multiplyParts($other);
 
