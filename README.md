@@ -170,6 +170,22 @@ For instance, the expression `19cm + 2m` could be expressed as `219cm` or `2.19m
 
 Unit based values in particular benefit from allowing user-defined typing in the arguments.
 
+### Scalar Objects
+
+The availability of the math operators will enable scalar object implementations in user code that actually act like scalars in most circumstances. This is further discussed in the benefits and future scope sections.
+
+### Collections
+
+Collection objects would benefit from using the `+` and `/` operators as union and partition operators. The union behavior is already supported for arrays natively, and would allow collection objects to benefit from it as well.
+
+### Resource Control Objects
+
+Some objects which represent a resource might benefit from having operator overloading as well. For instance, using the `+` operator to append a string to a file.
+
+### Queues
+
+Much like collections, queues could benefit from cleaner code enabled by operator overloads.
+
 ## Benefits Over Named Methods
 
 There are several benefits for objects using operators over named method calls where it makes sense to do so.
