@@ -326,7 +326,7 @@ There is more argument for enforcing commutativity for the **logical operators**
 
 ## Associativity
 
-Associativity refers to the ability of operands to be groups or evaluated with arbitrary precedence and result in the same value:
+Associativity refers to the ability of operands to be grouped or evaluated with arbitrary precedence and result in the same value:
 
 ```php
 <?php
