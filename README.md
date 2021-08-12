@@ -324,6 +324,34 @@ However, for other mathematical objects rules for commutativity are different. C
 
 There is more argument for enforcing commutativity for the **logical operators**, which definitionally should be commutative if they are used as logical operators. Doing so would preclude libraries and user applications from repurposing the logical operators for another purpose in some circumstances. However, as that is not part of this RFC and is left as future scope, it has no impact on this proposal.
 
+## Associativity
+
+Associativity refers to the ability of operands to be groups or evaluated with arbitrary precedence and result in the same value:
+
+```php
+<?php
+
+($a + $b) + $c === $a + ($b + $c);
+```
+
+It has similar behavior to commutativity in PHP with regard to operators:
+
+```php
+<?php
+
+// Arithmetic
+($a + $b) + $c === $a + ($b + $c); // True
+($a - $b) - $c !== $a - ($b - $c); // Subtraction by definition is not associative
+($a * $b) * $c === $a * ($b * $c); // True
+($a / $b) / $c !== $a / ($b / $c); // Division by definition is not associative
+
+// Other Math
+($a % $b) % $c === $a % ($b % $c); // Modulo by definition is not associative
+($a ** $b) ** $c === $a ** ($b ** $c); // Pow by definition is not associative
+```
+
+Associativity faces a similar problem to commutativity. Addition and multiplication are associative over the real numbers, and as `int` and `float` are part of the reals, the `+` and `*` operators are currently associative for all PHP code. 
+
 ## Operator Overloads in Other Languages
 
 There are three main approaches to operator overloading in other languages.
@@ -369,11 +397,21 @@ It is easy to see from this set of implementations that not only is commutativit
 
 ### Java/PHP
 
-Java does not support user-defined operator overloads at all, but has built-in behavior that is similar to operator overloads for certain situations. PHP has similar behavior, with not current support for user-defined operator overloads, but with some built-in behavior that acts in ways similar to an operator overload. The PHP cases were covered in the **Current Operator Behavior** section of the **Background**.
+Java does not support user-defined operator overloads at all, but has built-in behavior that is similar to operator overloads for certain situations. PHP has similar behavior, with no support for user-defined operator overloads but with some built-in behavior that acts in ways similar to an operator overload. The PHP cases were covered in the **Current Operator Behavior** section of the **Background**.
 
 In Java, the `+` operator can be used to join strings in a way similar to the PHP operator `.` and is sometimes described as a "built-in operator overload" by Java developers.
 
 ## Proposal
+
+### Typed Arguments
+
+Contrary to previous proposals, type errors due to argument type mismatches are not suppressed or translated to a different value, and instead allowed to function as exceptions or errors normally would.
+
+### Unimplemented Operator Methods
+
+If an operator is used with an object which does not have an implementation of the method for that operator, an `InvalidOperator` exception is thrown.
+
+### Binary Operator Methods
 
 This RFC proposes adding magic methods to PHP to control operator overloading for a limited set of operators. This RFC only proposes overloads for two part operations, or stated differently, no unary operations are proposed for inclusion in this RFC. As such, all the magic methods fit a single general format:
 
@@ -394,7 +432,7 @@ A new exception, `InvalidOperator`, is also provided for users to throw within t
 
 The default types for `$other` and the return are `mixed`, to allow user code to further narrow the type as appropriate for their application.
 
-### Comparison Operators
+### Comparison Operator Methods
 
 Partial support for comparison operators is also part of this RFC. Comparison operators in Python **do not** restrict the return to a boolean value. While there may be many use cases for overloading the comparison operators in a way that does not return a boolean, in the interest of promoting consistency with existing code, the magic methods for the comparison operators have the additional restriction of returning `bool` instead of `mixed`.
 
@@ -405,22 +443,11 @@ Additionally, since comparisons have a reflection relationship instead of a comm
 
 Class A {
 
-  public function __comparisonOp(mixed $other): bool {
+  public function __equals(mixed $other): bool {
   }
 
 }
 ```
-
-As the comparison operators involve a reflection relationship instead of a commutative one, the same behavior as detailed in the Python section will be used.
-
-| Left Operand Method | Right Operand Method |
-| ------------------- | -------------------- |
-| `__lessThan()` | `__greaterThan()` |
-| `__greaterThan()` | `__lessThan()` |
-| `__lessThanOrEq()` | `__greaterThanOrEq()` |
-| `__greaterThanOrEq()` | `__lessThanOrEq()` |
-| `__equals()` | `__equals()` |
-| `__notEquals()` | `__notEquals()` |
 
 The spaceship operator (`<=>`), used to determine sort hierarchy and encompassing all comparisons for numeric values, is also supported. However, its reflection and definition is slightly different:
 
@@ -458,13 +485,30 @@ In this RFC only a subset of the operators in PHP are supported for operator ove
 
 | Operator | Method Name |
 | -------- | ----------- |
-| `>` | `__greaterThan()` |
-| `<` | `__lessThan()` |
-| `>=` | `__greaterThanOrEq()` |
-| `<=` | `__lessThanOrEq()` |
 | `==` | `__equals()` |
-| `!=` | `__notEquals()` |
 | `<=>` | `__compareTo()` |
+
+**Implied Operators**
+
+The following operators are supported due to optimizations and substitutions that occur within the PHP engine.
+
+| Operator | Implied As | Method |
+| -------- | ---------- | ------ |
+| `+=` | `$a = $a + $b` | `__add()` |
+| `-=` | `$a = $a - $b` | `__sub()` |
+| `*=` | `$a = $a * $b` | `__mul()` |
+| `/=` | `$a = $a / $b` | `__div()` |
+| `%=` | `$a = $a % $b` | `__mod()` |
+| `**=` | `$a = $a ** $b` | `__pow()` |
+| `$a != $b` | `!($a == $b)` | `__equals()` |
+| `$a < $b` | `($a <=> $b) == -1` | `__compareTo()` |
+| `$a <= $b` | `($a <=> $b) < 1` | `__compareTo()` |
+| `$a > $b` | `($b <=> $a) == -1` | `__compareTo()` |
+| `$a >= $b` | `($b <=> $a) < 1` | `__compareTo()` |
+| `++$a` | `$a = $a + 1` | `__add()` |
+| `$a++` | `$a = $a + 1` | `__add()` |
+| `--$a` | `$a = $a - 1` | `__sub()` |
+| `$a--` | `$a = $a - 1` | `__sub()` |
 
 ## Backward Incompatible Changes
 
