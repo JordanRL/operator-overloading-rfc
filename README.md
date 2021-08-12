@@ -269,7 +269,7 @@ While the second line will result in:
 ```php
 <?php
 
-$val2 = $dec->__add($int, false);
+$val2 = $dec->__add($int, true);
 ```
 
 Ultimately this is an issue mostly for the `+` and `*` operators, since the other math operators are already non-commutative. If the developer does not understand that using objects can make the `+` and `*` operators non-commutative as well, bugs may be introduced that are not caught early.
