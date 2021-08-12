@@ -412,7 +412,7 @@ Existing extensions can continue to define their own operator overloads by provi
 
 ### To Opcache
 
-Added `ZEND_IS_LARGER` and `ZEND_IS_LARGER_OR_EQUAL` which are only used if at least one operand is an object. Otherwise previous behavior of reversing to `ZEND_IS_SMALLER` and `ZEND_IS_SMALLER_OR_EQUAL` is used.
+None
 
 ### New Constants
 
