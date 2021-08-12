@@ -186,7 +186,7 @@ Some objects which represent a resource might benefit from having operator overl
 
 Much like collections, queues could benefit from cleaner code enabled by operator overloads.
 
-## Benefits Over Named Methods
+## Benefits
 
 There are several benefits for objects using operators over named method calls where it makes sense to do so.
 
@@ -234,7 +234,7 @@ Scalar objects has been a fairly consistently requested feature from PHP develop
 
 Though logical operators are not included in this RFC, the inclusion of operator overloads reduces the need for scalar objects in core, which has been explored by internals previously, but constitutes a large effort to actually implement. With operator overloads, all the tools necessary to create full scalar objects would be available to PHP developers to create their own implementations, further sidestepping the issues surrounding varied opinions on the public API of such objects that would surely ensue in a serious effort to create them.
 
-## Risks Associated With Operator Overloading
+## Risks
 
 In addition to benefits the feature provides, there are also risks the feature must address.
 
