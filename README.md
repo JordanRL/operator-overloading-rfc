@@ -372,7 +372,7 @@ Class A {
 }
 ```
 
-The second operand is always pass as `$other` regardless of whether the called object is the left or right operand. If the called object is the left operand, then `$left` is `true`. If the called object is the right operand, then `$left` is `false`.
+The second operand is always passed as `$other` regardless of whether the called object is the left or right operand. If the called object is the left operand, then `$left` is `true`. If the called object is the right operand, then `$left` is `false`.
 
 A new exception, `InvalidOperator`, is also provided for users to throw within the operator magic methods if for any reason the operation is invalid due to type constraints, value constraints, or other factors.
 
