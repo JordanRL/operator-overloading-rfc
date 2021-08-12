@@ -218,6 +218,64 @@ Scalar objects has been a fairly consistently requested feature from PHP develop
 
 Though logical operators are not included in this RFC, the inclusion of operator overloads reduces the need for scalar objects in core, which has been explored by internals previously, but constitutes a large effort to actually implement. With operator overloads, all the tools necessary to create full scalar objects would be available to PHP developers to create their own implementations, further sidestepping the issues surrounding varied opinions on the public API of such objects that would surely ensue in a serious effort to create them.
 
+## Risks Associated With Operator Overloading
+
+In addition to benefits the feature provides, there are also risks the feature must address.
+
+### Less Readable Code With Poor Implementations
+
+Not all implementations in user code will follow best practices or understand the impact of their design choices. In such cases, operator overloading can make it less clear what a program is doing by hiding the complexity with an implied method call instead of an explicit one. These risks are not unique to operator overloading however, as there are many features of PHP which can make extremely unreadable code if used incorrectly.
+
+For example, the __toString() magic method is currently called in combination with the concat operator `.` and there is no restriction for this method to only execute code related to providing a string representation. It is entirely possible right now for this method to be used to mutate the object, resulting in unexpected and obfuscated behavior when an object is concatenated.
+
+This does not appear to be a widespread problem in PHP codebases however, and so while this is still a possible risk, the RFC author does not view it as any more risky than continuing to support existing magic methods.
+
+### Code May Be Non-Equivalent In Separate Codebases
+
+A user who copy and pastes a code snippet that takes advantage of operator overloading may end up with a non-equivalent program in their own codebase if they do not also include the class definitions that are referenced in the original source. While this may be unexpected in some circumstances, in most cases this is true currently of any code portability considerations a user may encounter.
+
+For example, a call to a database abstraction layer may be unequivalent if the configuration or schema of the underlying database is different in different codebases. A call to a class will already behave different if that class is replaced with a different definition, this is simply an exension of that reality. 
+
+The main risk is that changing a class definition prior would only have an effect on method calls (in most circumstances). This isn't 100% true, as demonstrated in the previous section, since existing magic methods provide ways for objects to mutate or affect behavior of non-method-call lines. This risk would be reduced by this RFC through three main strategies:
+
+1. An object used with an operator that is not defined on the class will result in an `InvalidOperator` exception immediately, preventing the issue from being deferred until a later and helping the problem be caught early.
+2. While currently expressions such as `$val = $obj + 2` will silently cast, through correctly typing the arguments users can be provided with early and explicit type errors and exceptions that make it easier to spot such issues.
+3. By allowing typed arguments for the operator overload methods, non-sensical object combinations can be avoided. Since this is controlled mainly through typing, it forces the developer to white list the classes that the operator works with.
+
+### Operators Can Hide Non-Equivalent Substitutions
+
+While commutativity is addressed at much greater length in the next section, it is possible for the following lines to be non-equivalent:
+
+```php
+<?php
+
+$int = new Number(5);
+$dec = new Decimal(6.0);
+
+$val1 = $int + $dec;
+$val2 = $dec + $int;
+```
+
+In may not be entirely clear that these two lines are not equivalent. Assuming that both classes have the method defined, the first line will result in:
+
+```php
+<?php
+
+$val1 = $int->__add($dec, true);
+```
+
+While the second line will result in:
+
+```php
+<?php
+
+$val2 = $dec->__add($int, false);
+```
+
+Ultimately this is an issue mostly for the `+` and `*` operators, since the other math operators are already non-commutative. If the developer does not understand that using objects can make the `+` and `*` operators non-commutative as well, bugs may be introduced that are not caught early.
+
+This can again be mitigated through good argument typing and design. A class can simply only accept other classes as arguments that it can ensure commutativity for. Or in some cases, such commutativity violations are actually part of the feature, such as with matrices.
+
 ## Commutativity
 
 Commutativity refers to the ability of operands to be reversed while retaining the same result. That is:
