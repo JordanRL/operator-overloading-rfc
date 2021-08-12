@@ -350,7 +350,7 @@ It has similar behavior to commutativity in PHP with regard to operators:
 ($a ** $b) ** $c === $a ** ($b ** $c); // Pow by definition is not associative
 ```
 
-Associativity faces a similar problem to commutativity. Addition and multiplication are associative over the real numbers, and as `int` and `float` are part of the reals, the `+` and `*` operators are currently associative for all PHP code. 
+Associativity faces a similar problem to commutativity. Addition and multiplication are associative over the real numbers, and as `int` and `float` are part of the reals, the `+` and `*` operators are currently associative for all PHP code. This behavior cannot be guaranteed however with objects which use operator overloading. In particular, `$a` and `$b` may be entirely different classes that accept different types as arguments.
 
 ## Operator Overloads in Other Languages
 
