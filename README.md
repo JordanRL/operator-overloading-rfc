@@ -79,6 +79,7 @@ Operator overloading is a well explored concept in programming that enables a pr
 | **@** | Error suppression operator |
 | **\`\`** | Shell execution escape operator |
 | **->** | Object accessor |
+| **?->** | Null-safe object accessor |
 | **\[\]** | Array referrence |
 
 **Assignment Operators**
