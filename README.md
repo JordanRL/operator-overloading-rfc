@@ -749,8 +749,6 @@ Implement as static methods or dynamic methods. A simply majority is required fo
 
 ## Patches and Tests
 
-https://github.com/JordanRL/php-src/pull/1
-
 ## References
 
 [1]: https://en.wikipedia.org/wiki/Matrix_multiplication#Non-commutativity
