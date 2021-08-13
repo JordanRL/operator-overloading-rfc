@@ -238,6 +238,12 @@ Though logical operators are not included in this RFC, the inclusion of operator
 
 Right now extensions and code in the engine have access to operator overloads while user code does not. This RFC brings user code more in line with the tools that are available in core by providing some access to control over object interaction with operators.
 
+### Drop In Type Replacements
+
+For applications that start with a numeric type and then later realize that it needs to be replaced with an object due to limitations of the scalar type, doing so represents a total refactor of the application. This may happen if you find that the `int` needs to keep track of unit conversion, or if you find that the value can overflow the type.
+
+With operator overloads, you could replace the variable initialization without refactoring the rest of the code.
+
 ## Risks
 
 In addition to benefits the feature provides, there are also risks the feature must address.
