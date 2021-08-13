@@ -451,7 +451,7 @@ Most behavior that users would want to control with overloads to these operators
 
 ### Error Early Where Possible
 
-The proposed implementation errors as early as possible to help developers use operators in unsupported ways. This is covered in the **Backwards Compatibility** section as well, but part of this is that **all objects will error when used with one of the overloadable operators unless they implement and overload**.
+The proposed implementation errors as early as possible to help developers who use operators in unsupported ways. This is covered in the **Backwards Compatibility** section as well, but part of this is that **all objects will error when used with one of the overloadable operators unless they implement the corresponding overload**.
 
 ## Proposal
 
