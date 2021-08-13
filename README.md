@@ -441,6 +441,18 @@ if ($notInt === 100) {
 }
 ```
 
+An object can be equivalent to other types, and that equivalence is something that the application itself should define. However an object cannot be identical to anything except itself, and allowing such an overload would enable to objects to "lie" in ways that would be unintuitive to most programmers while not really enabling any new functionality.
+
+### Logical Operators Are Not Overloadable
+
+This was another deliberate design choice. The logical operators **&&**, **||**, **and**, **or**, and **xor** have a critical and specific meaning within PHP. These operators refer to a specific kind of math operation, boolean algebra, and their usage is reserved for that purpose only. It would be far more disruptive and ambiguous to overload these operators than most other operators.
+
+Most behavior that users would want to control with overloads to these operators can in fact be accomplished by allowing an object to control its casting to a boolean value. That is not part of this RFC, but the RFC author views that as a better way to address these operators than allowing arbitrary overloads.
+
+### Error Early Where Possible
+
+The proposed implementation errors as early as possible to help developers use operators in unsupported ways. This is covered in the **Backwards Compatibility** section as well, but part of this is that **all objects will error when used with one of the overloadable operators unless they implement and overload**.
+
 ## Proposal
 
 ### Typed Arguments
