@@ -428,6 +428,8 @@ R has operator overloads implemented through named infixes. This means that not 
 
 This style of operator overloading is more suited to purely functional languages and is not being considered for this RFC. Beyond the questions of whether or not such a feature is appropriate for PHP, implementing arbitrary infixes would be a much more severe change to the engine that the proposer is not willing to undertake. Further, it would make ensuring things such as consistency between comparison operators much more challenging, if not impossible.
 
+Such strategies to operator overloading generally make sense when they are global, instead of specific to a particular object. As this RFC deals with object-specific operator overloads, this strategy is deemed inappropriate
+
 ### Python
 
 Python's implementation of operator overloads most closely matches this proposal, and so for the purpose of comparison we will more closely consider Python's operator overloading.
@@ -513,7 +515,7 @@ The proposed implementation errors as early as possible to help developers who u
 
 With the presence of static properties, a static method on an object does not guarantee immutability. However, having static methods for operator overloads might communicate to developers that these are intended to be used immutably. On the other hand, having the overload be static would make it much more difficult to use operator overloads with protected or private class properties.
 
-As it seems that mutable behavior from operator overloads would be widely seen by PHP developers as a bug in most circumstances, and the reassignment operators are not given independent overload methods, this RFC proposes using dynamic methods to make use of protected and private properties easier and more intuitive. However, the vote will contain an option for implementing as a static or dynamic method.
+As it seems that mutable behavior from operator overloads would be widely seen by PHP developers as a bug in most circumstances, and the reassignment operators are not given independent overload methods, this RFC proposes using dynamic methods to make use of protected and private properties easier and more intuitive.
 
 ## Proposal
 
@@ -529,26 +531,12 @@ If an operator is used with an object which does not have an implementation of t
 
 This RFC proposes adding magic methods to PHP to control operator overloading for a limited set of operators. This RFC only proposes overloads for two part operations, or stated differently, no unary operations are proposed for inclusion in this RFC. As such, all the magic methods fit a single general format:
 
-**Dynamic Method Signature**
 ```php
 <?php
 
-class A {
+interface Opable {
   
-  public function __op(mixed $other, bool $left): mixed {
-  }
-  
-}
-```
-
-**Static Method Signature**
-```php
-<?php
-
-class A {
-  
-  public static function __op(object $self, mixed $other, bool $left): mixed {
-  }
+  public function __op(never $other, bool $left): mixed;
   
 }
 ```
@@ -565,52 +553,24 @@ Partial support for comparison operators is also part of this RFC. Comparison op
 
 Additionally, since comparisons have a reflection relationship instead of a commutative one, the `$left` argument is omitted as it doesn't make sense. They can also still throw exceptions, including the `InvalidOperator` exception.
 
-**Dynamic Method Signature**
 ```php
 <?php
 
-class A {
+interface Equatable {
 
-  public function __equals(mixed $other): bool {
-  }
-
-}
-```
-
-**Static Method Signature**
-```php
-<?php
-
-class A {
-
-  public static function __equals(object $self, mixed $other): bool {
-  }
+  public function __equals(never $other): bool;
 
 }
 ```
 
 The spaceship operator (`<=>`), used to determine sort hierarchy and encompassing all comparisons for numeric values, is also supported. However, its reflection and definition is slightly different:
 
-**Dynamic Method Signature**
 ```php
 <?php
 
-class A {
+interface Comparable {
 
-  public function __compareTo(mixed $other): int {
-  }
-
-}
-```
-
-**Static Method Signature**
-```php
-<?php
-
-class A {
-
-  public static function __compareTo(object $self, mixed $other): int {
-  }
+  public function __compareTo(never $other): int;
 
 }
 ```
@@ -675,11 +635,13 @@ The following interfaces will be added:
 | Addable | `__add(never $other, bool $left): mixed` |
 | Subtractable | `__sub(never $other, bool $left): mixed` |
 | Multipliable | `__mul(never $other, bool $left): mixed` |
-| Divideable | `__div(never $other, bool $left): mixed` |
+| Dividable | `__div(never $other, bool $left): mixed` |
 | Modable | `__mod(never $other, bool $left): mixed` |
 | Powable | `__pow(never $other, bool $left): mixed` |
-| Equateable | `__equals(never $other): bool` |
+| Equatable | `__equals(never $other): bool` |
 | Comparable | `__compareTo(never $other): int` |
+
+The implementation checks for the interface on the class, so classes which implement the override method without declaring that they implement the interface will result in an `InvalidOperator` exception being thrown when used with the operator in question. This ensures the advantages described in this RFC which type variance and forced typing of the arguments provides.
 
 ## Backward Incompatible Changes
 
@@ -742,8 +704,6 @@ This RFC does not support R-style operator overloading, which allows users to de
 ## Proposed Voting Choices
 
 Add limited user-defined operator overloads as described: yes/no. A 2/3 vote is required to pass. 
-
-Implement as static methods or dynamic methods. A simply majority is required for this vote.
 
 ## Vote
 
