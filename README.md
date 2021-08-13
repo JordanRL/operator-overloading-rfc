@@ -234,6 +234,10 @@ Scalar objects has been a fairly consistently requested feature from PHP develop
 
 Though logical operators are not included in this RFC, the inclusion of operator overloads reduces the need for scalar objects in core, which has been explored by internals previously, but constitutes a large effort to actually implement. With operator overloads, all the tools necessary to create full scalar objects would be available to PHP developers to create their own implementations, further sidestepping the issues surrounding varied opinions on the public API of such objects that would surely ensue in a serious effort to create them.
 
+### Brings User Code More In Line With Internals
+
+Right now extensions and code in the engine have access to operator overloads while user code does not. This RFC brings user code more in line with the tools that are available in core by providing some access to control over object interaction with operators.
+
 ## Risks
 
 In addition to benefits the feature provides, there are also risks the feature must address.
@@ -401,6 +405,42 @@ Java does not support user-defined operator overloads at all, but has built-in b
 
 In Java, the `+` operator can be used to join strings in a way similar to the PHP operator `.` and is sometimes described as a "built-in operator overload" by Java developers.
 
+## Design Considerations
+
+There are several deliberate design considerations that were made to possible issues and risks that operator overloads present.
+
+### The Identity Operator Is Not Overloadable
+
+For a variety of reasons it would be problematic to allow operator overloading of the identity operator. This operator is supposed to guarantee type and that property would be lost the moment it was possible to overload the operator. Consider the following:
+
+```php
+<?php
+
+class A {
+  public int $value;
+  
+  public __equals(int|float|A $other, bool $left): bool
+  {
+    if ($other instanceof A) {
+      return $this->value == $other->value;
+    }
+    
+    return $this->value == $other;
+  }
+}
+
+$notInt = new A();
+$notInt->value = 100;
+
+if ($notInt == 100) {
+  echo "Equivalent to (int)100";
+}
+
+if ($notInt === 100) {
+  echo "Identical to (int)100";
+}
+```
+
 ## Proposal
 
 ### Typed Arguments
@@ -552,6 +592,10 @@ The bitwise operators, string concatenation operator, logical operators, and a f
 
 The reassignment operators are optimized as part of the compile step to instances of the base operators. If control of reassignment operators independently of the associated plain operators were to be supported, changes to how this optimization is done would be needed.
 
+### Implied Operators
+
+Several operators are supported by this RFC through automatic optimizations that occur. Some of these operators could be supported with direct overrides, such as the implied comparison operators. Such direct support for implied operators is left to future scope.
+
 ### Scalar Objects
 
 This RFC could impact and make the often explored scalar objects concept more fully featured, or even unneeded. It could, alternatively, make ensuring their behavior more difficult. Either way it is likely that this RFC would affect the scope of any scalar objects RFC.
@@ -560,7 +604,7 @@ This RFC could impact and make the often explored scalar objects concept more fu
 
 As mentioned in this RFC, there are some objects within core that implement their own limited operator overloads. Deciding whether to update these objects and open their overloads for extension is left as future scope.
 
-### New Infixes
+### Arbitrary Infixes
 
 This RFC does not support R-style operator overloading, which allows users to define custom operators outside the symbol set supported by core. Such a feature would be part of a separate RFC.
 
