@@ -141,7 +141,7 @@ The following is a non-exhaustive list of extensions which provide objects with 
 
 ## Use Cases
 
-The following is a non-exhaustive list of use cases that this RFC in particular could serve. Further use cases exist with implementations for more operators.
+The following is a non-exhaustive list of use cases that this RFC in particular could serve. Further use cases exist with implementations for more operators. This is an attempt to catalogue the likely use cases after the feature is introduced, not suggest that each of these represented a correct usage of this feature.
 
 ### Objects Representing Arbitrary Precision Numbers
 
@@ -179,15 +179,15 @@ The availability of the math operators will enable scalar object implementations
 
 ### Collections
 
-Collection objects would benefit from using the `+` and `/` operators as union and partition operators. The union behavior is already supported for arrays natively, and would allow collection objects to benefit from it as well.
+Collection objects could use the `+` and `/` operators as union and partition operators. The union behavior is already supported for arrays natively, and would allow collection objects to benefit from it as well.
 
 ### Resource Control Objects
 
-Some objects which represent a resource might benefit from having operator overloading as well. For instance, using the `+` operator to append a string to a file.
+Some objects which represent a resource might use operator overloading as well. For instance, using the `+` operator to append a string to a file. This usage would be prone to errors and instability, but in the interests of being complete, it is a foreseeable usage.
 
 ### Queues
 
-Much like collections, queues could benefit from cleaner code enabled by operator overloads.
+Much like collections, queues could use operator overloads to control adding and removing items from the queue.
 
 ## Benefits
 
@@ -664,6 +664,7 @@ The following operators are supported due to optimizations and substitutions tha
 | `$a++` | `$a = $a + 1` | `__add()` |
 | `--$a` | `$a = $a - 1` | `__sub()` |
 | `$a--` | `$a = $a - 1` | `__sub()` |
+| `-$a` | `$a = -1 * $a` | `__mul()` |
 
 ### Interfaces
 
