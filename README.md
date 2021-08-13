@@ -497,7 +497,7 @@ if ($notInt === 100) {
 }
 ```
 
-An object can be equivalent to other types, and that equivalence is something that the application itself should define. However an object cannot be identical to anything except itself, and allowing such an overload would enable to objects to "lie" in ways that would be unintuitive to most programmers while not really enabling any new functionality.
+An object can be equivalent to other types, and that equivalence is something that the application itself should define. However an object cannot be identical to anything except itself, and allowing such an overload would enable objects to "lie" in ways that would be unintuitive to most programmers while not really enabling any new functionality.
 
 ### Logical Operators Are Not Overloadable
 
