@@ -659,7 +659,7 @@ None
 
 ### To Existing Extensions
 
-Existing extensions can continue to define their own operator overloads by providing a `do_operation` call for their classes, however classes which are open to be extended may need to be updated so that their overloads can be extended by implementing the necessary methods.
+Existing extensions can continue to define their own operator overloads by providing a `do_operation` call for their classes, however classes which are open to be extended may benefit from being updated so that their overloads can be extended by implementing the necessary methods.
 
 ### To Opcache
 
